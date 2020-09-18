@@ -8,3 +8,5 @@ Description: Package for MATH4753
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/pojac3/MATH4753COUR0004
+BugReports: https://github.com/pojac3/MATH4753COUR0004/issues
