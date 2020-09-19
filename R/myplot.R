@@ -1,0 +1,12 @@
+#' myplot: A function for plotting a quadratic
+#'
+#' @param x : The diameter
+#'
+#' @return : Response, i.e., estimated height
+#' @export
+#'
+#' @examples
+#' \dontrun{quad.lm <- lm(y!~x,data=df); myplot(x=15)}
+myplot = function(x) {
+  quad.lm$coef[1] + quad.lm$coef[2] * x + quad.lm$coef[3] * x ^ 2
+}
