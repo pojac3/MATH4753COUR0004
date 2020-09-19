@@ -1,4 +1,4 @@
-#' myplot: A function for plotting a quadratic
+#' @title : A function for plotting a quadratic
 #'
 #' @param x : The diameter
 #'
