@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Task 1
 
+Get working directory
+
 ```{r}
 getwd()
 ```
@@ -22,14 +24,323 @@ getwd()
 
 ## Task 2
 
+Reading in the data
+
 ```{r}
 spruce = read.csv("SPRUCE.csv")
 tail(spruce)
 ```
 
+***
+
 ## Task 3
 
+### Lowess Scatter Plot
 ```{r}
 library(s20x)
+trendscatter(Height~BHDiameter, data = spruce, f=0.5)
 ```
+
+### Linear model object
+```{r}
+spruce.lm = with(spruce, lm(Height~BHDiameter))
+```
+
+### Finding residuals
+```{r}
+height.res = residuals(spruce.lm)
+```
+
+### Find fitted values
+```{r}
+height.fit = fitted(spruce.lm)
+```
+
+### Plotting residuals and fitted
+
+```{r}
+plot(y = height.res, x = height.fit)
+```
+
+### Plot the residuals vs fitted values using trendscatter()
+
+```{r}
+trendscatter(y=height.res, x = height.fit)
+```
+
+### What shape is seen in the plot? Compare it with the curve made with the trendscatter function (second line after Task3)
+
+Ans: In the second plot, the trend line goes downn after the peak, and in the first one, the trend stays the same but jsut becomes flatter. This suggests that we should not be using a linear model for this data
+
+### Using the plot() function and spruce.lm, make the residual plot
+
+```{r}
+plot(spruce.lm, which=1)
+```
+
+### Check normality using the s20x function normcheck()
+
+```{r}
+normcheck(spruce.lm, shapiro.wilk = TRUE)
+```
+
+### What is the pvalue for the Shapiro-Wilk test? What is the NULL hypothesis in this case?
+
+The p-value is 0.29 > 0.05, so we accept the null hypothesis which says our error is distributed normally. 
+
+### Write a sentence outlining your conclusions concerning the validity of applying the straight line to this data set.
+
+I don't think a straight line works well for this data set because it has more of a quadratic shape. 
+
+***
+
+## Task 4
+
+### Fit a quadratic to the points using the appropriate formula inside the lm() function and placing the output in the object quad.lm
+
+```{r}
+quad.lm = lm(Height ~ BHDiameter + I(BHDiameter^2), data=spruce)
+summary(quad.lm)
+```
+
+###	Make a fresh scatter plot of Height Vs BHDiameter and add the quadratic curve to it
+
+```{r}
+coef(quad.lm)
+plot(spruce)
+myplot = function(x) {
+  quad.lm$coef[1] + quad.lm$coef[2] * x + quad.lm$coef[3] * x ^ 2
+}
+
+curve(myplot, lwd = 2, col = "steelblue", add  = TRUE)
+```
+
+### Make quad.fit, a vector of fitted values.
+
+```{r}
+quad.fit = fitted(quad.lm)
+```
+
+### Make a plot of the residuals vs fitted values, use plot() and quad.lm
+
+```{r}
+plot(quad.lm, which = 1)
+```
+
+### Construct a QQ plot using normcheck() 
+
+```{r}
+normcheck(quad.lm, shapiro.wilk = TRUE)
+```
+
+### What is the value of the p-value in the Shapiro-Wilk test? What do you conclude?
+
+The p-value is 0.684, so we accept the null hypothesis. There is not much of a trend in the residuals vs fitted values  plot from quad.lm, so the quadratic model better describes the data than the linear model, because there is a level of noise. 
+
+***
+
+## Task 5
+
+### Summarize quad.lm paste it here.
+
+```{r}
+summary(quad.lm)
+```
+
+### What is the value of $\hat{\beta_0}$?
+
+$\hat{\beta_0}$ = 0.860896
+
+### What is the value of $\hat{\beta_1}$?
+
+$\hat{\beta_1}$ = 1.4659592
+
+### What is the value of $\hat{\beta_2}$?
+
+$\hat{\beta_2}$ = -0.027457
+
+###	Make interval estimates for $\hat{\beta_0}$, $\hat{\beta_1}$, $\hat{\beta_2}$
+
+```{r}
+ciReg(quad.lm)
+```
+
+### Write down the equation of the fitted line
+
+$\hat{Height} = 0.860896 + 1.46959x - 0.027457x^2$
+
+### Predict the Height of spruce when the Diameter is 15, 18 and 20cm (use predict())
+
+```{r}
+predict(quad.lm, data.frame(BHDiameter = c(15, 18, 20)))
+```
+
+### Compare with the previous predictions
+
+```{r}
+predict(spruce.lm, data.frame(BHDiameter = c(15,18,20)))
+```
+
+###	What is the value of multiple $R^2$? Compare it with the previous model. 
+
+For quad.lm:
+```{r}
+summary(quad.lm)$r.squared
+```
+
+For spruce.lm:
+```{r}
+summary(quad.lm)$r.squared
+```
+
+### Make use of adjusted R squared to compare models to determine which is “better”. 
+
+```{r}
+summary(quad.lm$adj.r.squared)
+```
+
+```{r}
+summary(spruce.lm$adj.r.squared)
+```
+
+### 	What does  ( multiple R^2) mean in this case? 
+Ans: The multiple r^2 is just a numeric value that describes how well the model describes the data
+
+### Which model explains the most variability in the Height?
+
+quad.lm, because its R-squared and adjusted R-squared values are greater than that of spruce.lm
+
+### Use anova() and compare the two models. Paste anova output here and give your conclusion underneath.
+
+```{r}
+anova(spruce.lm)
+anova(quad.lm)
+anova(spruce.lm, quad.lm)
+```
+
+The second model, quad.lm, better models the data because it has a smaller RSS value whic means it is closer to fitting the data than spruce.lm
+
+### Find TSS, record it here
+
+```{r}
+height.qfit = fitted(quad.lm)
+
+TSS = with(spruce, sum((Height - mean(Height)) ^ 2))
+TSS
+```
+
+### Find MSS, record it here
+
+```{r}
+MSS = with(spruce, sum((height.qfit - mean(Height)) ^ 2))
+MSS
+```
+
+### Find RSS, record it here
+
+```{r}
+RSS = with(spruce, sum((Height - height.qfit) ^ 2))
+RSS
+```
+
+### What is the value of MSS/TSS?
+
+```{r}
+MSS/TSS
+```
+
+***
+
+## Task 6
+
+### Investigate unusual points by making a cooks plot using cooks20x(). Place the plot here.
+
+```{r}
+cooks20x(quad.lm, main = "Cook's Distance plot for quad.lm")
+```
+
+### Use the web to find out what cooks distance is and how it is used – write a couple of sentences here.
+
+Cooks distance is used to identify outliers. It is a measure of a data points influence. 
+
+### What does cooks distance for the quadratic model and data tell you?
+
+Looking at the plot we had made earlier, we can determine the data point number 24 is the most influential. 
+
+### Make a new object called quad2.lm which is made from the same quadratic model using the data with the datum which has highest cooks distance removed.
+
+```{r}
+quad2.lm = lm(Height~BHDiameter + I(BHDiameter^2), data = spruce[-24,]) # removing the 24th data point
+```
+
+### Summarize the new object here.
+```{r}
+summary(quad2.lm)
+```
+
+### Compare with the summary information from quad.lm
+```{r}
+summary(quad.lm)
+```
+
+### What do you conclude?
+
+Cooks distance was correct. By removing the 24th data point, the R-squared value increased
+
+***
+
+## Task 7
+Prove using latex that y=β_0+β_1 x+β_2 (x-x_k )I(x>x_k) where I() is 1 when x>x_k and 0 else.
+
+Two lines: 
+$$l_1 : y=\beta_0 + \beta_1x$$ and $$l_2 : y = \beta_0 + \delta + (\beta_1 + \beta_2)x$$
+
+They share a point $x_k$, so we may set the equations equal to each other: 
+$$y_k=\beta_0 + \beta_1x_k = \beta_0 + \delta + (\beta_1 + \beta_2)x_k$$
+
+We may distribute $x_k$ on the right equation:
+$$\beta_0 + \beta_1x_k = \beta_0 + \delta + \beta_1x_k + \beta_2x_k$$
+
+$\beta_0$ and $\beta_1$ cancel:
+$$0=\delta + \beta_2x_k$$
+Subtract $\delta$ from both sides:
+$$\delta = -\beta_2x_k$$
+Going back to $l_2$ for any $x$,
+$$l_2 : y = \beta_0 + \delta + (\beta_1 + \beta_2)x$$
+Substitute $\delta = -\beta_2x_k$, 
+$$l_2 : y = \beta_0 - \beta_2x_k + (\beta_1 + \beta_2)x$$
+
+Distribute x
+$$l_2 : y = \beta_0 - \beta_2x_k + \beta_1x + \beta_2x$$
+Rearrange,
+$$l_2 : y = \beta_0 + \beta_1x + \beta_2x - \beta_2x_k$$
+Factor out $\beta_2$
+$$l_2 : y = \beta_0 + \beta_1x + \beta_2(x-x_k)$$
+Now $l_2$ describes an adjustment of $l_1$! We can use an indicator function to allow our function to know where it should and should not include the adjustment
+$$y=\beta_0 + \beta_1x + \beta_2(x-x_k)I(x>x_k)$$
+
+Reproduce the above plot using the code included in the R script (x_k=18)  , you may need to change some of the parameter values.
+
+```{r}
+sp2 = within(spruce, X <- (BHDiameter - 18) * (BHDiameter > 18))
+sp2
+
+lmp = lm(Height~BHDiameter + X, data = sp2)
+tmp = summary(lmp)
+names(tmp)
+myf = function(x, coef) {
+  coef[1] + coef[2] * (x) + coef[3] * (x-18) * (x-18>0)
+}
+
+plot(spruce, main = "Piecewise Regression")
+myf(0, coef = tmp$coefficients[,"Estimate"])
+curve(myf(x,coef=tmp$coefficients[,"Estimate"]), add=TRUE, lwd = 2, col = "Blue")
+abline(v=18)
+text(18,16,paste("R sq.=", round(tmp$r.squared, 4)))
+
+```
+
+***
+
+## Task 8
 
