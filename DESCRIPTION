@@ -3,7 +3,6 @@ Type: Package
 Title: MATH4753
 Version: 0.1.0
 Author: cour0004
-Maintainer: Jacob Courtney - cour0004 - jacobc@ou.edu
 Description: Package for MATH4753
 License: What license is it under?
 Encoding: UTF-8
@@ -11,3 +10,5 @@ LazyData: true
 URL: https://github.com/pojac3/MATH4753COUR0004
 BugReports: https://github.com/pojac3/MATH4753COUR0004/issues
 RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
