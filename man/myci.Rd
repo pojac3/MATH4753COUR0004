@@ -10,6 +10,11 @@ myci(x = c())
 \item{x}{A vector of values which you would like to create
 a 95\% confidence interval  of the mean for.}
 }
+\value{
+This function returns a vector ci which holds 2 values:
+ci[1] is the lower bound of the 95\% confidence interval of the mean, and
+ci[2] is the upper bound of the 95\% confidence interval of the mean.
+}
 \description{
 myci() creates a 95\% confidence interval of the mean given a vector x.
 This is like a much simplified version of the t.test() function,

@@ -1,0 +1,88 @@
+---
+title: "my-vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MATH4753COUR0004}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MATH4753COUR0004)
+```
+
+# Description of MATH4753COUR0004
+
+**11/17/2020**
+
+This package was created by Jacob Courtney for use in MATH 4753 in the fall 2020 semester at the University of Oklahoma. 
+
+This package includes 4 different statistical functions for a variety of statistical methods which are not already included in R. The 4 functions are as follow: 
+
+1) myci()
+2) myBoot()
+3) myncurve()
+4) myRandom()
+
+## 1) myci()
+
+Usage: 
+
+> myci(x = c())
+
+This function is rather simple. It creates a 95 percent confidence interval of the mean given a vector of data. It does this using the following formula for the confidence interval, with $\alpha=0.95$:
+
+$$\bar x \pm t_{\alpha/2}*\frac{s}{\sqrt n}$$
+
+We calculate $t_{\alpha/2}$ with the function qt()
+
+Example below:
+
+```{r}
+library(MATH4753COUR0004)
+y=c(3,4,5,6,7)
+confidence_interval=MATH4753COUR0004:::myci(y)
+confidence_interval
+```
+
+
+## 2) myBoot()
+
+Facilitates a bootstrap procedure. This may be used to make a number of plots, point, and interval estimates and useful output in the form of a list. An example is below. You may use ?myBoot to see more information on the arguments which it takes. A useful example of the function is below: 
+
+```{r}
+library(MATH4753COUR0004)
+set.seed(39)
+sam=rnorm(25,mean=25,sd=10)
+mb=MATH4753COUR0004:::myBoot(iter=10000,x=sam,fun="mean",alpha=0.05,xlab="mean",col="red")
+mb
+```
+
+
+## 3) myncurve()
+
+Creates a graph of a normal curve with mean mu and standard deviation sigma. On this plot, it will also plot the lower tail area under the curve beginning at a, and print this value out to the console. Example of this below:
+
+```{r}
+library(MATH4753COUR0004)
+MATH4753COUR0004:::myncurve(mu=10,sigma=5,a=6)
+```
+
+
+## 4) myRandom()
+
+This function generates a new random bar graph every time seconds for iter seconds based on the data gathered from n iterations. The arguments of the function, as well as an example run, are below:
+
+myRandom(n,iter=10,time=0.5)
+
+```{r}
+# this example will create 1 barplot every second for 4 seconds based on the data from 1000 different samples
+MATH4753COUR0004:::myRandom(1000,4,1) 
+```

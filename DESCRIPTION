@@ -12,3 +12,7 @@ BugReports: https://github.com/pojac3/MATH4753COUR0004/issues
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

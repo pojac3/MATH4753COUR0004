@@ -17,9 +17,7 @@
 #' set.seed(39)
 #' sam=rnorm(25,mean=25,sd=10)
 #' mb2_1=myboot2(iter=10000,x=sam,fun="mean",alpha=0.05,xlab="mean",col="red")
-
-
-myboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){
+myBoot<-function(iter=10000,x,fun="mean",alpha=0.05,...){
 
   #Notice where the ... is repeated in the code
   n=length(x)   #sample size

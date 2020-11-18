@@ -8,7 +8,7 @@
 #' @param x A vector of values which you would like to create
 #' a 95\% confidence interval  of the mean for.
 #'
-#' @returna This function returns a vector ci which holds 2 values:
+#' @return This function returns a vector ci which holds 2 values:
 #' ci[1] is the lower bound of the 95\% confidence interval of the mean, and
 #' ci[2] is the upper bound of the 95\% confidence interval of the mean.
 #'
